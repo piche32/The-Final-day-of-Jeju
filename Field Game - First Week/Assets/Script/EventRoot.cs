@@ -81,7 +81,10 @@ public class EventRoot : MonoBehaviour
         switch(type)
         {
             case _Event.TYPE.SHIP:
-                message = "적재한다";
+                message = "X: 적재한다";
+                break;
+            case _Event.TYPE.ITEMSPAWNER:
+                message = "Space: 때린다";
                 break;
         }
         return (message);

@@ -16,6 +16,10 @@ TagManager:
   - Box
   - Food
   - Ship
+  - Fruit
+  - Oil
+  - Field
+  - Sea
   layers:
   - Default
   - TransparentFX

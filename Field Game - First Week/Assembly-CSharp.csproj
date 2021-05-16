@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{D45C37A1-25A6-BC7C-20A1-3231A3E7F2B9}</ProjectGuid>
+    <ProjectGuid>{732473B1-F232-C894-6DFF-75048B6A59F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -64,17 +64,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Script\EruptSite.cs" />
     <Compile Include="Assets\Script\EventRoot.cs" />
     <Compile Include="Assets\Script\GameStatus.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Box.cs" />
+    <Compile Include="Assets\Script\ItemSpawner\FixRigidbodyPushBack.cs" />
     <Compile Include="Assets\Script\ItemSpawner\ItemRoot.cs" />
     <Compile Include="Assets\Script\ItemSpawner\ItemSpawner.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Tree.cs" />
-    <Compile Include="Assets\Script\Lava.cs" />
+    <Compile Include="Assets\Script\LevelDesign.cs" />
     <Compile Include="Assets\Script\PlayerControl.cs" />
     <Compile Include="Assets\Script\SceneControl.cs" />
-    <Compile Include="Assets\Script\Volcano.cs" />
+    <Compile Include="Assets\Script\Singleton.cs" />
+    <Compile Include="Assets\Script\SoundController.cs" />
+    <Compile Include="Assets\Script\StartGame.cs" />
+    <Compile Include="Assets\Script\TutorialBT.cs" />
+    <Compile Include="Assets\Script\UIController.cs" />
+    <Compile Include="Assets\Script\Volcano\EruptSite.cs" />
+    <Compile Include="Assets\Script\Volcano\EruptSiteMaterialControll.cs" />
+    <Compile Include="Assets\Script\Volcano\Lava.cs" />
+    <Compile Include="Assets\Script\Volcano\LavaSound.cs" />
+    <Compile Include="Assets\Script\Volcano\Volcano.cs" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Toon_DoubleShadeWithFeather_Mobile_TransClipping_StencilMask.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Toon_ShadingGradeMap_Mobile_StencilMask.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Tess\Toon_DoubleShadeWithFeather_Tess_Light_StencilMask.shader" />
@@ -200,31 +209,31 @@
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Toon_ShadingGradeMap_Mobile_StencilOut.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Tess\Toon_ShadingGradeMap_Tess_Light_StencilMask.shader" />
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.5f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>

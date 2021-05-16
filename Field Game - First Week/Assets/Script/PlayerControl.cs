@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public static float MOVE_AREA_RADIUS = 15.0f; //섬의 반지름.
-    public static float MOVE_SPEED = 7.0f; //이동 속도.
+    public static float MOVE_AREA_RADIUS = 50.0f; //섬의 반지름.
+    public static float MAX_MOVE_SPEED = 10.0f; //이동 속도.
+    private float moveSpeed = MAX_MOVE_SPEED;
 
-
-    private struct Key { //키 조작 정보 구조체.
+    private struct Key
+    { //키 조작 정보 구조체.
         public bool up;
         public bool down;
         public bool right;
@@ -17,10 +18,10 @@ public class PlayerControl : MonoBehaviour
         public bool action; //먹는다 / 수리한다
         public bool hit; //때린다
     };
-
     private Key key; // 키 조작 정보를 보관하는 변수
 
-    public enum STEP { // 플레이어의 상태를 나타내는 열거체
+    public enum STEP
+    { // 플레이어의 상태를 나타내는 열거체
         NONE = -1, //상태 정보 없음
         MOVE = 0, //이동 중
         LOADING, //수리 중
@@ -30,7 +31,7 @@ public class PlayerControl : MonoBehaviour
     };
 
     private STEP step = STEP.NONE; //현재 상태.
-    public STEP Step { get { return Step; } }
+    public STEP Step { get { return step; } }
     private STEP next_step = STEP.NONE; //다음 상태.
     public STEP NextStep { get { return next_step; } }
     public float step_timer = 0.0f; //타이머.
@@ -38,7 +39,7 @@ public class PlayerControl : MonoBehaviour
     private Animator animator;
 
     private GameObject closest_item = null; //플레이어의 정면에 있는 GameObject;
-   // private GameObject carried_item = null; //플레이어가 들어올린 GameOjbect;
+                                            // private GameObject carried_item = null; //플레이어가 들어올린 GameOjbect;
     private ItemRoot item_root = null; //ItemRoot 스크립트를 가짐
     public GUIStyle guistyle; //폰트 스타일
 
@@ -51,6 +52,8 @@ public class PlayerControl : MonoBehaviour
     private List<GameObject> items; //들고 있는 아이템
     [SerializeField] int maxItemsCount = 10; //아이템 최대 소지 갯수
 
+    UIController uiCtrl = null;
+    SoundController soundCtrl = null;
     void Start()
     {
         this.step = STEP.NONE; //현 단계 상태를 초기화
@@ -59,7 +62,7 @@ public class PlayerControl : MonoBehaviour
         this.animator = this.GetComponent<Animator>();
 
         this.item_root = GameObject.Find("GameRoot").GetComponent<ItemRoot>();
-        this.guistyle.fontSize = 16;
+        this.guistyle.fontSize = 32;
 
         this.event_root =
             GameObject.Find("GameRoot").GetComponent<EventRoot>();
@@ -71,6 +74,9 @@ public class PlayerControl : MonoBehaviour
         //items
         //메모리 영역 확보
         this.items = new List<GameObject>();
+
+        uiCtrl = GameObject.Find("UI").GetComponent<UIController>();
+        soundCtrl = GameObject.Find("Sound").GetComponent<SoundController>();
     }
 
     // 입력 정보를 가져오고 상태에 변화가 있을 때의 처리를 거쳐 각 상태별로 실행
@@ -79,7 +85,7 @@ public class PlayerControl : MonoBehaviour
         this.get_input(); //입력 정보 취득
 
         this.step_timer += Time.deltaTime;
-        float eat_time = 0.5f; //연료는 0.5초에 걸쳐 먹는다.
+        float eat_time = 1.0f; //연료는 0.5초에 걸쳐 먹는다.
         float load_time = 0.5f; //적재 시 걸리는 시간도 0.5초
         float hit_time = 1.0f; //때리는 데 걸리는 시간은 1초
 
@@ -91,8 +97,8 @@ public class PlayerControl : MonoBehaviour
                 case STEP.MOVE:
                     do
                     {
-                        if (!this.key.action && !this.key.hit) //액션 키가 눌려 있지 않다.
-                             break; //루프 탈출
+                        if (!this.key.action && !this.key.hit && !this.key.pick) //액션 키가 눌려 있지 않다.
+                            break; //루프 탈출
 
                         if (this.key.action)
                         {//주목하는 이벤트가 있을 때,
@@ -116,37 +122,38 @@ public class PlayerControl : MonoBehaviour
                                     break;
                                 }
                             }
+                        }
+                        if (this.closest_item != null && this.key.pick)
+                        {
+                            //가까운 아이템 판별
+                            Item.TYPE closest_item_type =
+                                this.item_root.getItemType(this.closest_item);
 
-                            //if (this.carried_item != null)
-                            //{
-                            //    //가지고 있는 아이템 판별
-                            //    Item.TYPE carried_item_type =
-                            //        this.item_root.getItemType(this.carried_item);
-
-                            //    switch (carried_item_type)
-                            //    {
-                            //        case Item.TYPE.OIL: //오일이라면.
-                            //        //case Item.TYPE.FRUIT: //과일이라면
-                            //                              //'식사 중' 상태로 이행.
-                            //            this.next_step = STEP.EATING;
-                            //            break;
-                            //    }
-                            //}
+                            switch (closest_item_type)
+                            {
+                                case Item.TYPE.OIL: //오일이라면.
+                                                    //case Item.TYPE.FRUIT: //과일이라면
+                                                    //'식사 중' 상태로 이행.
+                                    this.next_step = STEP.EATING;
+                                    break;
+                            }
                         }
 
                         //때리기 키가 눌려있을 때
                         if (this.key.hit)
                         {
-                            if(closest_event != null && closest_event.CompareTag("AppleRespawn"))
+                            if (closest_event != null && closest_event.CompareTag("AppleRespawn"))
                             {
+                                soundCtrl.PlaySFX("Hit");
                                 closest_event.GetComponentInParent<Tree>().hit();
                             }
-                         
-                            if(closest_event != null && closest_event.CompareTag("Box"))
+
+                            if (closest_event != null && closest_event.CompareTag("Box"))
                             {
+                                soundCtrl.PlaySFX("Hit");
                                 closest_event.GetComponentInParent<Box>().hit();
                             }
-                             this.next_step = STEP.HIT;
+                            this.next_step = STEP.HIT;
                             break;
                         }
 
@@ -185,37 +192,49 @@ public class PlayerControl : MonoBehaviour
                 case STEP.MOVE:
                     break;
 
-                //case STEP.EATING: //'식사 중' 상태의 처리
-                //    if (this.carried_item != null)
-                //    {
-                //        //들고 있는 아이템의 '내구도 회복 정도'를 가져와서 설정.
-                //        this.game_status.addDurability(this.item_root.getRegainSatiety(this.carried_item));
-
-                //        //가지고 있던 아이템을 폐기
-                //        GameObject.Destroy(this.carried_item);
-                //        this.carried_item = null;
-                //    }
-                //    break;
+                case STEP.EATING: //'식사 중' 상태의 처리
+                    if (this.closest_item != null)
+                    {
+                        //들고 있는 아이템의 '내구도 회복 정도'를 가져와서 설정.
+                        this.game_status.addDurability(this.item_root.getRegainSatiety(this.closest_item));
+                         //가지고 있던 아이템을 폐기
+                        GameObject.Destroy(this.closest_item);
+                        this.closest_item = null;
+                    }
+                    break;
 
                 case STEP.LOADING: // '적재 중'이 되면.
                     if (items.Count > 0)
                     {
-                        foreach(GameObject item in items)
-                        {
-                            //들고 있는 아이템의 '적재 상태'를 가져와서 설정.
-                            this.game_status.addCapacity(this.item_root.getLoadCapacity(item));
-                            //가지고 있는 아이템 삭제.
-                            items.Remove(item);
-                            GameObject.Destroy(item);
-                            game_status.itemCount--;
-                          //  this.closest_item = null;
-                        }
+                        GameObject item = items[0];
+                        this.game_status.addCapacity(this.item_root.getLoadCapacity(item));
+                        items.RemoveAt(0);
+                        GameObject.Destroy(item);
+                        game_status.itemCount--;
+                        uiCtrl.SetItemCount(game_status.itemCount);
+                        if (items.Count >= 3)
+                            addSpeed(MAX_MOVE_SPEED * 0.1f); //3개 이상 들고 나서부터 속도가 조금씩 떨어진다.
+                        //foreach(GameObject item in items)
+                        //{
+                        //    //들고 있는 아이템의 '적재 상태'를 가져와서 설정.
+                        //    this.game_status.addCapacity(this.item_root.getLoadCapacity(item));
+                        //    //가지고 있는 아이템 삭제.
+
+                        //    items.Remove(item);
+                        //    GameObject.Destroy(item);
+                        //    game_status.itemCount--;
+                        //  //  this.closest_item = null;
+                        //}
                         ship_model.transform.parent.GetComponent<Animator>().SetTrigger("Load");
+
+                        //효과음
+                        soundCtrl.PlaySFX("LoadItem");
                     }
                     break;
 
                 case STEP.HIT:
-                    animator.SetTrigger("Hit"); 
+                    animator.SetTrigger("Hit");
+
                     break;
             }
             this.step_timer = 0;
@@ -232,13 +251,13 @@ public class PlayerControl : MonoBehaviour
                 //this.game_status.alwaysDecreasedDurability();
                 break;
 
-            //case STEP.LOADING:
-            //    //배를 위 아래로 움직인다.
-            //    Vector3 pos = this.ship_model.transform.localPosition;
-            //    if (pos.y < 2) pos.y += 0.1f;
-            //    else pos.y -= 0.1f;
-            //    this.ship_model.transform.localPosition = pos;
-            //    break;
+                //case STEP.LOADING:
+                //    //배를 위 아래로 움직인다.
+                //    Vector3 pos = this.ship_model.transform.localPosition;
+                //    if (pos.y < 2) pos.y += 0.1f;
+                //    else pos.y -= 0.1f;
+                //    this.ship_model.transform.localPosition = pos;
+                //    break;
         }
 
 
@@ -284,35 +303,37 @@ public class PlayerControl : MonoBehaviour
         Vector3 position = this.transform.position; //현재 위치를 보관
         bool is_moved = false;
 
-        if(this.key.right) { //우
-            move_vector += Vector3.right; //이동용 벡터를 오른쪽으로 향한다.
+        if (this.key.right)
+        { //우
+            move_vector += transform.right; //이동용 벡터를 오른쪽으로 향한다.
             is_moved = true; //'이동 중' 플래그
         }
 
-        if (this.key.left) { //좌
-            move_vector += Vector3.left; //이동용 벡터를 오른쪽으로 향한다.
+        if (this.key.left)
+        { //좌
+            move_vector += -transform.right; //이동용 벡터를 왼쪽으로 향한다.
             is_moved = true; //'이동 중' 플래그
         }
 
         if (this.key.up)
         {
-            move_vector += Vector3.forward;
+            move_vector += transform.forward;
             is_moved = true;
         }
 
         if (this.key.down)
         {
-            move_vector += Vector3.back;
+            move_vector += -transform.forward;
             is_moved = true;
         }
 
         move_vector.Normalize(); //길이를 1로
-        move_vector *= MOVE_SPEED * Time.deltaTime; //속도 X 시간 = 거리
+        move_vector *= moveSpeed * Time.deltaTime; //속도 X 시간 = 거리
         position += move_vector; //위치를 이동
         position.y = 0.0f; //높이를 0
 
         //세계의 중앙에서 갱신한 위치까지의 거리가 섬의 반지름보다 크면
-        if(position.magnitude > MOVE_AREA_RADIUS)
+        if (position.magnitude > MOVE_AREA_RADIUS)
         {
             position.Normalize();
             position *= MOVE_AREA_RADIUS; //위치를 섬의 끝자락에 머물게 한다.
@@ -324,17 +345,27 @@ public class PlayerControl : MonoBehaviour
         this.transform.position = position;
         //이동 벡터의 길이가 0.01보다 큰 경우
         //=어느 정도 이상 이동한 경우
-        if(move_vector.magnitude > 0.01f)
+        if (move_vector.magnitude > 0.01f)
         {
-            //캐릭터의 방향을 천천히 바꾼다.
-            Quaternion q = Quaternion.LookRotation(move_vector, Vector3.up);
-            this.transform.rotation =
-                Quaternion.Lerp(this.transform.rotation, q, 0.2f);
+            if (this.key.down)
+            {
+                //캐릭터의 방향을 천천히 바꾼다.
+                Quaternion q = Quaternion.LookRotation(-move_vector, Vector3.up);
+                this.transform.rotation =
+                    Quaternion.Lerp(this.transform.rotation, q, 0.03f);
+            }
+            else
+            {
+                //캐릭터의 방향을 천천히 바꾼다.
+                Quaternion q = Quaternion.LookRotation(move_vector, Vector3.up);
+                this.transform.rotation =
+                    Quaternion.Lerp(this.transform.rotation, q, 0.03f);
+            }
         }
 
         if (is_moved)
         {
-            foreach(GameObject item in items)
+            foreach (GameObject item in items)
             {
                 //들고 있는 아이템에 따라 '체력 소모 정도'를 조사한다.
                 float consume = this.item_root.getConsumeDurability(item);
@@ -342,8 +373,10 @@ public class PlayerControl : MonoBehaviour
                 this.game_status.addDurability(-consume * Time.deltaTime);
             }
         }
+
+
     }
-    
+
     private bool is_event_ignitable()
     {
         bool ret = false;
@@ -375,19 +408,19 @@ public class PlayerControl : MonoBehaviour
         GameObject other_go = other.gameObject;
 
         //트리거의 GameObject 레이어 설정이 Item이라면
-        if(other_go.layer == LayerMask.NameToLayer("Item"))
+        if (other_go.layer == LayerMask.NameToLayer("Item"))
         {
             //아무것도 주목하고 있지 않으면
-            if(this.closest_item == null)
+            if (this.closest_item == null)
             {
                 if (this.is_other_in_view(other_go)) //정면에 있으면
                 {
                     this.closest_item = other_go; //주목한다
                 }
                 //뭔가 주목하고 있으면
-                else if(this.closest_item == other_go)
+                else if (this.closest_item == other_go)
                 {
-                    if(!this.is_other_in_view(other_go)) //정면에 없으면
+                    if (!this.is_other_in_view(other_go)) //정면에 없으면
                     {
                         this.closest_item = null; //주목을 그만둔다.
                     }
@@ -396,10 +429,10 @@ public class PlayerControl : MonoBehaviour
         }
 
         //트리거의 GameObject의 레이어 설정이 Event라면.
-        else if(other_go.layer == LayerMask.NameToLayer("Event"))
+        else if (other_go.layer == LayerMask.NameToLayer("Event"))
         {
             //아무것도 주목하고 있지 않으면.
-             if(this.closest_event == null)
+            if (this.closest_event == null)
             {
                 if (this.is_other_in_view(other_go)) //정면에 있으면.
                 {
@@ -409,27 +442,29 @@ public class PlayerControl : MonoBehaviour
             //뭔가에 주목하고 있으면.
             else if (this.closest_event == other_go)
             {
-                if(!this.is_other_in_view(other_go)) //정면에 없으면.
+                if (!this.is_other_in_view(other_go)) //정면에 없으면.
                 {
                     this.closest_event = null; //주목을 그만둔다.
                 }
             }
         }
-    } 
+    }
+
+    public void hitLava(float Damage)
+    {
+        this.game_status.addDurability(-Damage); //내구성 소모
+        soundCtrl.PlaySFX("Alert");
+    }
 
     private void OnTriggerExit(Collider other)
     {
         if (this.closest_item == other.gameObject)
             this.closest_item = null; //주목을 그만둔다.
+
+        if (this.closest_event == other.gameObject)
+            this.closest_event = null; //주목을 그만둔다.
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        if(collision.transform.tag == "Lava") //용암에 맞으면
-        {
-            this.game_status.addDurability(-collision.gameObject.transform.GetComponent<Lava>().Damage); //내구성 소모
-        }
-    }
 
     private void pick_or_drop_control()
     {
@@ -441,9 +476,41 @@ public class PlayerControl : MonoBehaviour
             }
 
             if (this.closest_item == null) //주목 중인 아이템이 없으면
-                break;
+            {
+                if (items.Count > 0) //들고 있는 아이템이 있다면
+                {                   //내려놓기
+                    GameObject carried_item = items[0];
+                    carried_item.transform.localPosition = Vector3.forward * 1.0f + Vector3.up * 5.0f;
+                    carried_item.transform.parent = null; //자식 설정을 해제
 
-            if (this.closest_item.tag == "Oil") break; //오일은 바로 먹는다.
+                    items.RemoveAt(0);
+                    this.game_status.itemCount--;
+                    uiCtrl.SetItemCount(game_status.itemCount);
+                    if (items.Count >= 3)
+                    {
+                        addSpeed((MAX_MOVE_SPEED * 0.1f));
+                    }
+
+                    //효과음
+                    soundCtrl.PlaySFX("DropItem");
+                    return;
+                }
+                break;
+            }
+
+            //(수정)위치 옮기기
+            if (this.closest_item.tag == "Oil")
+            {
+                ////들고 있는 아이템의 '내구도 회복 정도'를 가져와서 설정.
+                //this.game_status.addDurability(this.item_root.getRegainSatiety(this.closest_item));
+
+                ////가지고 있던 아이템을 폐기
+                //GameObject.Destroy(this.closest_item);
+                //this.closest_item = null;
+                //this.step = STEP.EATING;
+                //this.next_step = STEP.NONE;
+                break;
+            } //오일은 바로 먹는다.
 
             if (items.Count < maxItemsCount) //아이템을 들 수 있다면
             {
@@ -451,18 +518,24 @@ public class PlayerControl : MonoBehaviour
                 this.closest_item.transform.localPosition = Vector3.up * 2.0f * (items.Count + 1);
                 items.Add(this.closest_item);
                 //주목 중인 아이템을 들어올린다.
+
+                soundCtrl.PlaySFX("GetItem"); //효과음
+
+                //Rigidbody 때문에 Player가 물체에 닿으면 튕기므로 Field에 있을 땐 isKinematic을 꺼두고
+                //Player가 들었을 때만 isKinematic을 켜준다.
+                Rigidbody rigidbody = this.closest_item.GetComponent<Rigidbody>();
+                if (rigidbody != null)
+                {
+                    rigidbody.isKinematic = false;
+                }
+
                 this.closest_item = null;
                 this.game_status.itemCount++;
+                uiCtrl.SetItemCount(game_status.itemCount);
+                if (items.Count > 3)
+                    addSpeed(-(MAX_MOVE_SPEED * 0.1f)); //3개 이상 들고 나서부터 속도가 조금씩 떨어진다.
             }
-            else //더 이상 아이템을 들 수 없다면,
-                 //들고 있는 아이템을 약간(1.0f) 앞으로 이동시켜서
-            {
-                GameObject carried_item = items[items.Count - 1];
-                carried_item.transform.localPosition = Vector3.forward * 1.0f + Vector3.up * 5.0f;
-                carried_item.transform.parent = null; //자식 설정을 해제
-                items.RemoveAt(items.Count - 1); //오류나면 여기부터 의심하기
-                this.game_status.itemCount--;
-            }
+
 
         } while (false);
     }
@@ -497,9 +570,15 @@ public class PlayerControl : MonoBehaviour
         float x = 20.0f;
         float y = Screen.height - 40.0f;
 
-        if (items.Count > 0) //들고 있는 게 있으면
+        if(this.closest_item != null) //앞에 오일이 있으면
         {
-            GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z: 버린다", guistyle);
+            if (this.closest_item.tag == "Oil")
+                GUI.Label(new Rect(x, y, 200.0f, 40.0f), "Z: 마신다", guistyle);
+        }
+
+        else if (items.Count > 0) //들고 있는 게 있으면
+        {
+            GUI.Label(new Rect(x, y, 200.0f, 40.0f), "Z: 버린다", guistyle);
             do
             {
                 if (this.is_event_ignitable())
@@ -512,7 +591,7 @@ public class PlayerControl : MonoBehaviour
         {
             if (this.closest_item != null)
             {
-                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "Z: 줍는다", guistyle);
+                GUI.Label(new Rect(x, y, 200.0f, 40.0f), "Z: 줍는다", guistyle);
             }
         }
 
@@ -520,18 +599,24 @@ public class PlayerControl : MonoBehaviour
         switch (this.step)
         {
             case STEP.EATING:
-                GUI.Label(new Rect(x, y, 200.0f, 20.0f), "위잉위잉위잉잉잉잉......", guistyle);
+                GUI.Label(new Rect(Screen.width - 200.0f, y, 200.0f, 20.0f), "위잉위잉위잉잉잉잉......", guistyle);
                 break;
             case STEP.LOADING:
-                GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "음식 적재중", guistyle);
+                GUI.Label(new Rect(Screen.width - 200.0f, y, 200.0f, 20.0f), "음식 적재중", guistyle);
                 break;
         }
 
         if (this.is_event_ignitable()) //이벤트가 시작 가능한 경우
         { //이벤트용 메시지를 취득
             string message = this.event_root.getIgnitableMessage(this.closest_event);
-            GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), "X: " + message, guistyle);
+            GUI.Label(new Rect(x + 200.0f, y, 200.0f, 20.0f), message, guistyle);
         }
+
+        //GUI.Label(new Rect(x, y - 40.0f, 200.0f, 20.0f), "속도: " + moveSpeed.ToString(), guistyle);
+    }
+
+    void addSpeed(float value)
+    {
+        moveSpeed += value;
     }
 }
- 

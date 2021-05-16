@@ -6,7 +6,11 @@ public class Item
 {
     public enum TYPE
     { //아이템 종류
-        NONE = -1, BOX, FRUIT, FOOD, OIL,
+        NONE = -1,
+        BOX,
+        FRUIT,
+        FOOD,
+        OIL,
         NUM, //아이템이 몇 종류인가 나타낸다.
     };
 };
@@ -21,7 +25,7 @@ public class ItemRoot : MonoBehaviour
 
     private float respawn_timer_box = 0.0f; //박스 출현 시간
 
-    public static int RESPAWN_NUM_BOX = 5;
+    public static int RESPAWN_NUM_BOX = 15; //박스 출현 갯수
     private int respawn_num_box = 0;
 
     //초기화 작업을 시행한다.
@@ -74,6 +78,7 @@ public class ItemRoot : MonoBehaviour
                 case "Box": type = Item.TYPE.BOX; break;
                 case "Food": type = Item.TYPE.FOOD; break;
                 case "Fruit": type = Item.TYPE.FRUIT; break;
+                case "Oil": type = Item.TYPE.OIL; break;
             }
         }
         return (type);
@@ -95,7 +100,7 @@ public class ItemRoot : MonoBehaviour
         pos.y = 1.0f;
         pos.x += Random.Range(-1.0f, 1.0f);
         pos.z += Random.Range(-1.0f, 1.0f);
-        //철광석의 위치를 이동
+        //박스의 위치를 이동
         go.transform.position = pos;
         go.transform.parent = this.respawnPointsBox[n].transform;
 
@@ -164,8 +169,6 @@ public class ItemRoot : MonoBehaviour
             switch (type) //들고 있는 아이템의 종류로 갈라진다.
             {
                 case Item.TYPE.OIL:
-                    regain = GameStatus.REGAIN_DURABILITY_OIL; break;
-                case Item.TYPE.FRUIT:
                     regain = GameStatus.REGAIN_DURABILITY_OIL; break;
             }
         }   
