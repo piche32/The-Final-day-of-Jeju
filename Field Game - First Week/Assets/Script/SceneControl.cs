@@ -103,7 +103,7 @@ public class SceneControl : MonoBehaviour
                     this.player_control.enabled = false;
                     //현재의 경과 시간으로 클리어 시간을 갱신.
                     this.clear_time = this.step_timer;
-                    LevelDesign.level++;
+                    DataController.Instance._gameData.level++;
                     uiCtrl.SetSuccessUI(clear_time);
                     Time.timeScale = 0.0f;
 

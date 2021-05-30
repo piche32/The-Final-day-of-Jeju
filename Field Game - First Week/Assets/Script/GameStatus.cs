@@ -12,6 +12,10 @@ public class GameStatus : MonoBehaviour
     public static float CONSUME_SATIETY_IRON = 0.20f;
     public static float CONSUME_SATIETY_APPLE = 0.1f;
     public static float CONSUME_SATIETY_PLANT = 0.1f;
+    
+    //음식, 과일을 운반했을 때 각각의 무게 정도.
+    public static float WEIGHT_FRUIT = 0.1f;
+    public static float WEIGHT_FOOD = 0.5f;
 
     //용암의 데미지
     public static float DAMAGE_OF_LAVA = 0.1f;
@@ -35,11 +39,9 @@ public class GameStatus : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
         this.guistyle.fontSize = 24; //폰트 크기를 24로.
         uiCtrl = GameObject.Find("UI").GetComponent<UIController>();
         uiCtrl.SetCapacityCount(this.capacity);
-
     }
 
 
@@ -58,6 +60,20 @@ public class GameStatus : MonoBehaviour
         
     }
 
+    public float getWeight(Item.TYPE type)
+    {
+        float ret = 0.0f;
+        switch (type)
+        {
+            case Item.TYPE.FRUIT:
+                ret = WEIGHT_FRUIT;
+                break;
+            case Item.TYPE.FOOD:
+                ret = WEIGHT_FOOD;
+                break;
+        }
+        return ret;
+    }
     //내구도 소모 메서드 추가
     public void alwaysDecreasedDurability()
     {

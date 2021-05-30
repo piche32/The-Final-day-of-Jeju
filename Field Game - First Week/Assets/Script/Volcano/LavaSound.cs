@@ -19,6 +19,7 @@ public class LavaSound : MonoBehaviour
 
     private void Update()
     {
+        if (UIController.isPause) return;
         if(isFinished && !audioPlayer.isPlaying)
         {
             Destroy(this.gameObject);

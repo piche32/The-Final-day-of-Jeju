@@ -31,22 +31,19 @@ public class LevelDesign : Singleton<LevelDesign>
 {
     protected LevelDesign () { }
 
-    public static int level = 1;
+    //public static int level = 1;
 
     private float UNLIMITED = float.MaxValue;
 
     private void OnEnable()
     {
+        DataController.Instance.LoadGameData();
         setLevelDate();
-    }
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public void setLevelDate()
     {
-        switch (level)
+        switch (DataController.Instance._gameData.level)
         {
             case 1:
                 GameStatus.DAMAGE_OF_LAVA = 0.1f;

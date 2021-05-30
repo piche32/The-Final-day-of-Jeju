@@ -64,7 +64,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Script\DataController.cs" />
     <Compile Include="Assets\Script\EventRoot.cs" />
+    <Compile Include="Assets\Script\GameData.cs" />
     <Compile Include="Assets\Script\GameStatus.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Box.cs" />
     <Compile Include="Assets\Script\ItemSpawner\FixRigidbodyPushBack.cs" />
@@ -72,13 +74,18 @@
     <Compile Include="Assets\Script\ItemSpawner\ItemSpawner.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Tree.cs" />
     <Compile Include="Assets\Script\LevelDesign.cs" />
-    <Compile Include="Assets\Script\PlayerControl.cs" />
+    <Compile Include="Assets\Script\Player\PlayerControl.cs" />
+    <Compile Include="Assets\Script\Player\ShowDirect.cs" />
     <Compile Include="Assets\Script\SceneControl.cs" />
     <Compile Include="Assets\Script\Singleton.cs" />
     <Compile Include="Assets\Script\SoundController.cs" />
-    <Compile Include="Assets\Script\StartGame.cs" />
-    <Compile Include="Assets\Script\TutorialBT.cs" />
-    <Compile Include="Assets\Script\UIController.cs" />
+    <Compile Include="Assets\Script\UI\GoToMainBT.cs" />
+    <Compile Include="Assets\Script\UI\NewGameBT.cs" />
+    <Compile Include="Assets\Script\UI\QuitBT.cs" />
+    <Compile Include="Assets\Script\UI\Setting.cs" />
+    <Compile Include="Assets\Script\UI\StartGame.cs" />
+    <Compile Include="Assets\Script\UI\TutorialBT.cs" />
+    <Compile Include="Assets\Script\UI\UIController.cs" />
     <Compile Include="Assets\Script\Volcano\EruptSite.cs" />
     <Compile Include="Assets\Script\Volcano\EruptSiteMaterialControll.cs" />
     <Compile Include="Assets\Script\Volcano\Lava.cs" />

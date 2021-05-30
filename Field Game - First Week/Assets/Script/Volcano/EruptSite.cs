@@ -99,6 +99,9 @@ public class EruptSite : MonoBehaviour
 
     private void Update()
     {
+        if (UIController.isPause) 
+            return;
+
         timer += Time.deltaTime;
         if (timer > destroyedTime)
             Destroy(this.gameObject);
