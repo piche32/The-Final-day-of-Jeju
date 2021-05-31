@@ -8,7 +8,7 @@ public class DataController : Singleton<DataController>
 {
     public string GameDataFileName = ".json"; //이름 변경 절대 X
 
-    public GameData _gameData;
+    private GameData _gameData;
     public GameData gameData
     {
         get
@@ -47,8 +47,19 @@ public class DataController : Singleton<DataController>
 
     public void MakeNewData()
     {
+        GameData temp = null;
         Debug.Log("새로운 파일 생성");
+        if(_gameData != null)
+        {
+            temp = _gameData;
+        }
         _gameData = new GameData();
+
+        if(temp != null)
+        {
+            _gameData.BGMVolume = temp.BGMVolume;
+            _gameData.SFXVolume = temp.SFXVolume;
+        }
         
     }
 

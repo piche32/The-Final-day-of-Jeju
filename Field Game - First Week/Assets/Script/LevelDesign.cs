@@ -43,7 +43,7 @@ public class LevelDesign : Singleton<LevelDesign>
 
     public void setLevelDate()
     {
-        switch (DataController.Instance._gameData.level)
+        switch (DataController.Instance.gameData.level)
         {
             case 1:
                 GameStatus.DAMAGE_OF_LAVA = 0.1f;

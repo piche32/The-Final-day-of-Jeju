@@ -78,12 +78,15 @@
     <Compile Include="Assets\Script\Player\ShowDirect.cs" />
     <Compile Include="Assets\Script\SceneControl.cs" />
     <Compile Include="Assets\Script\Singleton.cs" />
-    <Compile Include="Assets\Script\SoundController.cs" />
     <Compile Include="Assets\Script\UI\GoToMainBT.cs" />
     <Compile Include="Assets\Script\UI\NewGameBT.cs" />
+    <Compile Include="Assets\Script\UI\PauseUI.cs" />
     <Compile Include="Assets\Script\UI\QuitBT.cs" />
     <Compile Include="Assets\Script\UI\Setting.cs" />
+    <Compile Include="Assets\Script\UI\SoundController.cs" />
     <Compile Include="Assets\Script\UI\StartGame.cs" />
+    <Compile Include="Assets\Script\UI\TitleSetting.cs" />
+    <Compile Include="Assets\Script\UI\TitleSoundCtrl.cs" />
     <Compile Include="Assets\Script\UI\TutorialBT.cs" />
     <Compile Include="Assets\Script\UI\UIController.cs" />
     <Compile Include="Assets\Script\Volcano\EruptSite.cs" />

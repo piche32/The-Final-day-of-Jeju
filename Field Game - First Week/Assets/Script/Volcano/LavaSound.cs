@@ -15,6 +15,7 @@ public class LavaSound : MonoBehaviour
         audioPlayer = GetComponent<AudioSource>();
         audioPlayer.spatialBlend = 1.0f;
         audioPlayer.clip = boom;
+        audioPlayer.volume = 0.72f * DataController.Instance.gameData.SFXVolume;
     }
 
     private void Update()

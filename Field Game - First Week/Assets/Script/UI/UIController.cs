@@ -62,7 +62,7 @@ public class UIController : MonoBehaviour
 
     public void SetTime(float value)
     {
-        if(DataController.Instance._gameData.level != 4)
+        if(DataController.Instance.gameData.level != 4)
         {
             value = SceneControl.GAME_OVER_TIME - value;
         }
@@ -73,7 +73,7 @@ public class UIController : MonoBehaviour
 
     public void SetCapacityCount(float value)
     {
-        if (DataController.Instance._gameData.level == 4)
+        if (DataController.Instance.gameData.level == 4)
         {
             capacityCount.text = "적재량 " + value.ToString() + "/ - ";
         }
@@ -104,4 +104,9 @@ public class UIController : MonoBehaviour
         }
     }
 
+    public void OnDisable()
+    {
+        isPause = false;
+        Time.timeScale = 1.0f;
+    }
 }
