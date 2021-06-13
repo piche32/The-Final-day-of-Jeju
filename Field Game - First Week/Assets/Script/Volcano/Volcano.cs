@@ -29,7 +29,7 @@ public class Volcano : MonoBehaviour
 
     float eruptSiteScale = 1.0f; //생성되는 용암이 퍼지는 범위의 크기
     float stepTime = 0.0f;
-    float eruptSiteScaleTime = 60.0f; //생성되는 용암이 퍼지는 범위의 크기가 바뀌는 시간
+    float eruptSiteScaleTime = 10.0f; //생성되는 용암이 퍼지는 범위의 크기가 바뀌는 시간
 
     SoundController soundCtrl;
 

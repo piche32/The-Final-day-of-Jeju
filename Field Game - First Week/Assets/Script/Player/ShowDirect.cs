@@ -13,6 +13,7 @@ public class ShowDirect : MonoBehaviour
     }
     void Update()
     {
-        this.transform.LookAt(target.transform.position);
+        Vector3 dest = new Vector3(target.transform.position.x, this.transform.position.y, target.transform.position.z);
+        this.transform.LookAt(dest);
     }
 }

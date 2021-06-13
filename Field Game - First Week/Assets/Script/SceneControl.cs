@@ -15,6 +15,7 @@ public class SceneControl : MonoBehaviour
         PLAY = 0, //플레이 중
         CLEAR, //클리어 상태
         GAMEOVER, //게임 오버 상태
+        END, //4단계까지 클리어
         NUM, //상태가 몇 종류인지 나타낸다(=3)
     };
 
@@ -29,6 +30,7 @@ public class SceneControl : MonoBehaviour
     UIController uiCtrl = null;
     SoundController soundCtrl = null;
 
+
     // Start is called before the first frame update
     void OnEnable()
     {
@@ -37,11 +39,13 @@ public class SceneControl : MonoBehaviour
         this.step = STEP.PLAY;
         this.next_step = STEP.PLAY;
         this.guistyle.fontSize = 64;
-        LevelDesign.Instance.setLevelDate();
+        LevelDesign.Instance.init();
 
         uiCtrl = GameObject.Find("UI").GetComponent<UIController>();
         soundCtrl = GameObject.Find("Sound").GetComponent<SoundController>();
         uiCtrl.SetCapacityCount(0.0f);
+        uiCtrl.setLevel(DataController.Instance.gameData.level);
+        uiCtrl.initCapacity();
     }
 
     // Update is called once per frame
@@ -56,13 +60,22 @@ public class SceneControl : MonoBehaviour
                 case STEP.PLAY:
                     if (this.game_status.isGameClear())
                     {
+                        if (DataController.Instance.gameData.level == 4){
+                            this.next_step = STEP.END;
+                        }
+                        else
                         //클리어 상태로 이동.
-                        this.next_step = STEP.CLEAR;
+                            this.next_step = STEP.CLEAR;
                     }
                     if (this.game_status.isGameOver())
                     {
                         // 게임 오버 상태로 이동.
-                        this.next_step = STEP.GAMEOVER;
+                        if (DataController.Instance.gameData.level == 4) //마지막 단계
+                        {
+                            this.next_step = STEP.END;
+                        }
+                        else
+                            this.next_step = STEP.GAMEOVER;
                     }
                     if (this.step_timer >= GAME_OVER_TIME)
                     {
@@ -70,26 +83,26 @@ public class SceneControl : MonoBehaviour
                     }
                     break;
 
-                //클리어 시 혹은 게임 오버 시의 처리
-                //case STEP.CLEAR:
+                    //클리어 시 혹은 게임 오버 시의 처리
+                    //case STEP.CLEAR:
 
-                //    if (Input.GetMouseButtonDown(0))
-                //    {
-                //        //마우스 버튼이 눌렸으면 GameScene을 다시 읽는다.
-                //        SceneManager.LoadScene("GameScene");
-                //        Time.timeScale = 1.0f;
-                //    }
-                //    break;
+                    //    if (Input.GetMouseButtonDown(0))
+                    //    {
+                    //        //마우스 버튼이 눌렸으면 GameScene을 다시 읽는다.
+                    //        SceneManager.LoadScene("GameScene");
+                    //        Time.timeScale = 1.0f;
+                    //    }
+                    //    break;
 
-                //case STEP.GAMEOVER:
-                //   // Time.timeScale = 0.0f;
-                //    if (Input.GetMouseButtonDown(0))
-                //    {
-                //        //마우스 버튼이 눌렸으면 GameScene을 다시 읽는다.
-                //        SceneManager.LoadScene("GameScene");
-                //        Time.timeScale = 1.0f;
-                //    }
-                //    break;
+                    //case STEP.GAMEOVER:
+                    //   // Time.timeScale = 0.0f;
+                    //    if (Input.GetMouseButtonDown(0))
+                    //    {
+                    //        //마우스 버튼이 눌렸으면 GameScene을 다시 읽는다.
+                    //        SceneManager.LoadScene("GameScene");
+                    //        Time.timeScale = 1.0f;
+                    //    }
+                    //    break;
             }
         }
         while (this.next_step != STEP.NONE)
@@ -104,6 +117,7 @@ public class SceneControl : MonoBehaviour
                     //현재의 경과 시간으로 클리어 시간을 갱신.
                     this.clear_time = this.step_timer;
                     DataController.Instance.gameData.level++;
+                    DataController.Instance.SaveGameData();
                     uiCtrl.SetSuccessUI(clear_time);
                     Time.timeScale = 0.0f;
 
@@ -118,6 +132,14 @@ public class SceneControl : MonoBehaviour
 
                     //노래
                     soundCtrl.PlayBGM("GameOver");
+                    break;
+
+                case STEP.END:
+                    this.player_control.enabled = false;
+                    uiCtrl.SetResultUI(step_timer, game_status.capacity);
+                    Time.timeScale = 0.0f;
+
+                    soundCtrl.PlayBGM("Success");
                     break;
             }
             this.step_timer = 0.0f;

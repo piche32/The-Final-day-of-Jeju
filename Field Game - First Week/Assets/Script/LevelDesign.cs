@@ -34,41 +34,63 @@ public class LevelDesign : Singleton<LevelDesign>
     //public static int level = 1;
 
     private float UNLIMITED = float.MaxValue;
+    Transform stages = null;
 
-    private void OnEnable()
+
+    public void init()
     {
         DataController.Instance.LoadGameData();
-        setLevelDate();
+        stages = GameObject.Find("Stage").transform;
+        setLevelData();
     }
 
-    public void setLevelDate()
+
+    private void setStage(int level)
     {
+        for(int i = 0; i < stages.childCount; i++)
+        {
+            if(i + 1 == level)
+            {
+                stages.GetChild(i).gameObject.SetActive(true);
+            }
+            else
+            {
+                stages.GetChild(i).gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void setLevelData()
+    {
+        setStage(DataController.Instance.gameData.level);
         switch (DataController.Instance.gameData.level)
         {
             case 1:
                 GameStatus.DAMAGE_OF_LAVA = 0.1f;
                 GameStatus.MAX_SHIP_CAPACITY = 30.0f;
                 SceneControl.GAME_OVER_TIME = 180.0f;
-                Volcano.NumOfLava = 10;
+                Volcano.NumOfLava = 20;
                 break;
             case 2:
                 GameStatus.DAMAGE_OF_LAVA = 0.2f;
                 GameStatus.MAX_SHIP_CAPACITY = 35.0f;
-                SceneControl.GAME_OVER_TIME = 180.0f;
-                Volcano.NumOfLava = 20;
-                break;
-            case 3:
-                GameStatus.DAMAGE_OF_LAVA = 0.2f;
-                GameStatus.MAX_SHIP_CAPACITY = 35.0f;
-                SceneControl.GAME_OVER_TIME = 150.0f;
+                SceneControl.GAME_OVER_TIME = 170.0f;
                 Volcano.NumOfLava = 30;
                 break;
+            case 3:
+                GameStatus.DAMAGE_OF_LAVA = 0.25f;
+                GameStatus.MAX_SHIP_CAPACITY = 35.0f;
+                SceneControl.GAME_OVER_TIME = 150.0f;
+                Volcano.NumOfLava = 40;
+                break;
             case 4:
-                GameStatus.DAMAGE_OF_LAVA = 0.2f;
-                GameStatus.MAX_SHIP_CAPACITY = UNLIMITED;
+            default:
+                GameStatus.DAMAGE_OF_LAVA = 0.25f;
+                GameStatus.MAX_SHIP_CAPACITY = 200.0f;
                 SceneControl.GAME_OVER_TIME = UNLIMITED;
                 Volcano.NumOfLava = 50;
                 break;
+
         }
     }
 }

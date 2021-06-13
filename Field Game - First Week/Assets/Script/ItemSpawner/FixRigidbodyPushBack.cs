@@ -15,6 +15,7 @@ public class FixRigidbodyPushBack : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
         
     }
 

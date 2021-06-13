@@ -57,7 +57,7 @@ public class GameStatus : MonoBehaviour
     {
         this.durability = Mathf.Clamp01(this.durability + add);
         uiCtrl.SetDurabilityCount(this.durability);
-        
+        uiCtrl.SetDurability(this.durability);
     }
 
     public float getWeight(Item.TYPE type)
@@ -79,6 +79,7 @@ public class GameStatus : MonoBehaviour
     {
         this.durability = Mathf.Clamp01(this.durability - CONSUME_DURABILITY_ALWAYS * Time.deltaTime);
         uiCtrl.SetDurabilityCount(this.durability);
+        uiCtrl.SetDurability(this.durability);
     }
 
     //게임 클리어 검사

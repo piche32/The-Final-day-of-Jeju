@@ -5,14 +5,14 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     public static float MOVE_AREA_RADIUS = 50.0f; //섬의 반지름.
-    public static float MAX_MOVE_SPEED = 10.0f; //이동 속도.
+    public static float MAX_MOVE_SPEED = 13.0f; //이동 속도.
     private float moveSpeed = MAX_MOVE_SPEED;
     public float MoveSpeed { get { return moveSpeed; } }
 
- private float rotSpeed = 2.0f;
+ private float rotSpeed = 2f;
     public float RotSpeed { get { return rotSpeed; } }
 
-
+    [SerializeField] GameObject healing = null;
     private struct Key
     { //키 조작 정보 구조체.
         public bool up;
@@ -171,6 +171,7 @@ public class PlayerControl : MonoBehaviour
                     if (this.step_timer > eat_time)
                     { //2초 대기
                         this.next_step = STEP.MOVE; //'이동' 상태로 이행
+                        healing.SetActive(false);
                     }
                     break;
 
@@ -207,6 +208,9 @@ public class PlayerControl : MonoBehaviour
                         //가지고 있던 아이템을 폐기
                         GameObject.Destroy(this.closest_item);
                         this.closest_item = null;
+                        animator.SetTrigger("Eat");
+                        healing.SetActive(true);
+
                     }
                     break;
 
@@ -295,7 +299,7 @@ public class PlayerControl : MonoBehaviour
 
         //Z키
         this.key.pick = Input.GetKeyDown(KeyCode.Z);
-        this.key.action = Input.GetKeyDown(KeyCode.Z);
+        this.key.action = Input.GetKeyDown(KeyCode.Z) | Input.GetKeyDown(KeyCode.X);
 
         //X키
         this.key.drop = Input.GetKeyDown(KeyCode.X);
@@ -326,6 +330,7 @@ public class PlayerControl : MonoBehaviour
         {
             move_vector += transform.forward;
             is_moved = true;
+            
         }
 
         if (this.key.down)
@@ -412,6 +417,14 @@ public class PlayerControl : MonoBehaviour
             }
         }*/
 
+        if (is_moved)
+        {
+            animator.SetFloat("Speed", moveSpeed / MAX_MOVE_SPEED);
+        }
+        else
+        {
+            animator.SetFloat("Speed", 0.0f);
+        }
 
     }
 

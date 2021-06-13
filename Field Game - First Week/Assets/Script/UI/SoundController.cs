@@ -24,7 +24,14 @@ public class SoundController : MonoBehaviour
         sfxSources = new List<AudioSource>();
         foreach (var source in transform.GetChild(0).GetComponents<AudioSource>())
         {
+            source.volume = DataController.Instance.gameData.SFXVolume;
             sfxSources.Add(source);
+        }
+
+        if(UI == null)
+        {
+            Debug.LogError(string.Format("[{0}: {1}] There's no UI Controller.",
+                this.name.ToString(), this.gameObject.name.ToString()));
         }
 
     }
@@ -49,7 +56,7 @@ public class SoundController : MonoBehaviour
     public void PlayBGM(string soundName)
     {
         audioSource.pitch = 1.0f;
-        audioSource.volume = 1.0f;
+       // audioSource.volume = 1.0f;
         for(int i = 0; i < bgm.Length; i++)
         {
             if(bgm[i].name == soundName)

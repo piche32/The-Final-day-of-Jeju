@@ -64,16 +64,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Assets\RPG Food &amp; Drinks Pack\Assets\Scripts\Consumer.cs" />
+    <Compile Include="Assets\Assets\RPG Food &amp; Drinks Pack\Assets\Scripts\Rotator.cs" />
+    <Compile Include="Assets\Script\Cheat.cs" />
     <Compile Include="Assets\Script\DataController.cs" />
     <Compile Include="Assets\Script\EventRoot.cs" />
     <Compile Include="Assets\Script\GameData.cs" />
     <Compile Include="Assets\Script\GameStatus.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Box.cs" />
     <Compile Include="Assets\Script\ItemSpawner\FixRigidbodyPushBack.cs" />
+    <Compile Include="Assets\Script\ItemSpawner\FruitDrop.cs" />
     <Compile Include="Assets\Script\ItemSpawner\ItemRoot.cs" />
     <Compile Include="Assets\Script\ItemSpawner\ItemSpawner.cs" />
     <Compile Include="Assets\Script\ItemSpawner\Tree.cs" />
     <Compile Include="Assets\Script\LevelDesign.cs" />
+    <Compile Include="Assets\Script\Player\PlayerAni.cs" />
     <Compile Include="Assets\Script\Player\PlayerControl.cs" />
     <Compile Include="Assets\Script\Player\ShowDirect.cs" />
     <Compile Include="Assets\Script\SceneControl.cs" />
@@ -106,6 +111,7 @@
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\ToonColor_DoubleShadeWithFeather_StencilMask.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Toon_DoubleShadeWithFeather_Mobile_Clipping_StencilMask.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Toon_ShadingGradeMap_AngelRing_StencilOut.shader" />
+    <None Include="Assets\Assets\AddOns\Mg3D_Food\README.txt" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Tess\Toon_ShadingGradeMap_AngelRing_Tess_Light.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Tess\ToonColor_DoubleShadeWithFeather_Tess_StencilOut.shader" />
     <None Include="Assets\Assets\SD Unity-Chan Haon Custom\Shader\Unity-chan Toon Shader Ver 2.0.6\Tess\UCTS_Outline_Tess.cginc" />
@@ -238,6 +244,9 @@
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>D:/Mine/Homework/4_1/Functional Programming/Field Game - First Week/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
